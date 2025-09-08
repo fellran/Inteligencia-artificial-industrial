@@ -1,12 +1,5 @@
-# ---------------------------------------------------------------------------
-# PRÁTICA 1 - SISTEMA DE RECOMENDAÇÃO DE VIAGEM [cite: 2]
-# Curso: Qualificação em IA Industrial [cite: 1]
-# Unidade Curricular: Fundamentos de Python para IA [cite: 1]
-# ---------------------------------------------------------------------------
+# material
 
-# --- Base de Dados de Destinos ---
-# Utilizando uma lista de dicionários para armazenar os destinos e suas características. 
-# O sistema pode ser facilmente expandido adicionando novos dicionários a esta lista. [cite: 24]
 destinos = [
     {
         "nome": "Floresta Amazônica, Brasil",
@@ -46,96 +39,78 @@ destinos = [
     }
 ]
 
-# --- Funções do Sistema ---
-# O uso de funções ajuda a organizar o código e evitar repetições. [cite: 19]
+# FUNÇÕES
 
-def obter_preferencias_do_usuario():
-    """
-    Esta função interage com o usuário para obter suas preferências de viagem.
-    Ela realiza a leitura das preferências conforme solicitado. [cite: 21]
-    Inclui validação de entrada para garantir que as respostas sejam válidas. 
-    """
-    # Pergunta sobre o clima [cite: 9]
+def obter_preferencia_usuario():
+
     while True:
-        clima = input("Você prefere clima quente ou frio? ").lower().strip()
+        clima = input("Voce prefere clima quente ou frio: ").lower().strip()
         if clima in ["quente", "frio"]:
             break
         else:
-            print("Resposta inválida. Por favor, digite 'quente' ou 'frio'.")
+            print("Resposta invalida. por favor digite 'quente' ou 'frio'. ")
 
-    # Pergunta sobre o ambiente [cite: 10]
     while True:
-        ambiente = input("Prefere lugares com natureza ou paisagens urbanas? (digite 'natureza' ou 'urbano') ").lower().strip()
+        ambiente = input("Prefere lugares com natureza ou paisagens urbanas? (digite apenas 'natureza' ou 'urbano') ").lower().strip()
         if ambiente in ["natureza", "urbano"]:
             break
         else:
-            print("Resposta inválida. Por favor, digite 'natureza' ou 'urbano'.")
+            print("Resposta invalida. por favor digite 'natureza' ou 'urbano'. ")
 
-    # Pergunta sobre o orçamento [cite: 11]
     while True:
         try:
-            orcamento = float(input("Qual é o seu orçamento disponível para a viagem (em R$)? "))
+            orcamento = float(input("Qual é o orçamento disponivel para viagem? (digite apenas numeros, ex: 9000) "))
             if orcamento > 0:
                 break
             else:
-                print("Por favor, insira um valor positivo para o orçamento.")
+                print("Por favor, insira um valor positivo")
         except ValueError:
-            print("Entrada inválida. Por favor, digite um número para o orçamento.")
+            print("Entrada invalida. Por favor, digite um número para o orçamento, sem pontos ou vírgulas.")
+    
 
-    return {"clima": clima, "ambiente": ambiente, "orcamento": orcamento}
+    preferencias = {
+        "clima": clima,
+        "ambiente": ambiente,
+        "orcamento": orcamento
+    }
+    return preferencias
 
+def recomendar_destino(preferencias, lista_destinos):
 
-def recomendar_destino(preferencias, lista_de_destinos):
-    """
-    Compara as preferências do usuário com a lista de destinos disponíveis. [cite: 22]
-    Usa um laço 'for' para percorrer os dados e 'if' para tomar decisões. [cite: 18, 30]
-    """
     destinos_compativeis = []
-    for destino in lista_de_destinos:
-        # Estrutura condicional para verificar a compatibilidade
-        if (preferencias["clima"] == destino["clima"] and
+    for destino in lista_destinos:
+
+        if (preferencias["clima"] == destino["clima"] and 
             preferencias["ambiente"] == destino["ambiente"] and
             preferencias["orcamento"] >= destino["orcamento"]):
             destinos_compativeis.append(destino)
 
     return destinos_compativeis
 
-
 def apresentar_recomendacao(recomendacoes):
-    """
-    Apresenta o resultado da busca ao usuário.
-    Retorna a sugestão mais adequada ou uma mensagem de que nada foi encontrado. [cite: 23]
-    """
-    print("\n--- Resultado da Recomendação ---")
+
     if not recomendacoes:
-        print("Desculpe, não encontramos um destino compatível com suas preferências e orçamento.")
+        print("\nDesculpe, não encontramos um destino compativel com suas preferencias.")
     else:
-        # Pega o primeiro destino compatível encontrado
-        destino_sugerido = recomendacoes[0]
-        print(f"Destino recomendado: {destino_sugerido['nome']} [cite: 13]")
+        
+        print("\nCom base nas suas preferências, encontramos os seguintes destinos:")
+        for destino_sugerido in recomendacoes:
+            print(f"\nDestino recomendado: {destino_sugerido['nome']}")
 
-        # Apresenta uma justificativa simples para a recomendação [cite: 14]
-        justificativa = (f"Esta é uma ótima opção de viagem com clima {destino_sugerido['clima']}, "
-                         f"ambiente de {destino_sugerido['ambiente']} e que se encaixa no seu orçamento!")
-        print(f"Justificativa: {justificativa}")
+            justificativa = (f"Esta é uma ótima opção de viagem com clima {destino_sugerido['clima']}, "
+                           f"ambiente de {destino_sugerido['ambiente']} e que se encaixa no seu orçamento de R$ {destino_sugerido['orcamento']:.2f}.")
+            
+            print(f"Justificativa: {justificativa}")
 
-# --- Execução Principal do Script ---
 def main():
-    """
-    Função principal que organiza a execução do programa.
-    """
-    print("Bem-vindo ao Sistema de Recomendação de Viagem!")
-    
-    # Chama a função para obter as preferências do usuário
-    prefs_usuario = obter_preferencias_do_usuario()
-    
-    # Chama a função para encontrar destinos compatíveis
+
+    print("Bem-vindo ao sistema de recomendação de viagem!")
+
+    prefs_usuario = obter_preferencia_usuario()
+
     lista_recomendada = recomendar_destino(prefs_usuario, destinos)
-    
-    # Apresenta o resultado
+
     apresentar_recomendacao(lista_recomendada)
 
-
-# Garante que o script será executado apenas quando chamado diretamente
 if __name__ == "__main__":
     main()
